@@ -23,14 +23,18 @@ ORANGE="#FFA500"
 RED="#FF0000"
 BLUE="#0000FF"
 LIME="#00FF00"
+DARKGREEN="#298A08"
+YELLOW="#FFFF00"
+BROWN="#8A4B08"
 
 #####################
 # LINES LEGEND NAME #
 #####################
-YLABEL="Température"
-T1NAME="Salon"
-T1AVGN="Salon_Average"
-T2NAME="20°C"
+YLABEL="Temperature"
+T1NAME="Living_Room"
+T1AVGN="Living_Room_Avg"
+T2NAME="Balcony"
+T2AVGN="Balcony_Avg"
 T3NAME="25°C"
 
 ###################################
@@ -56,8 +60,8 @@ rrdtool graph $IMGPATH/day.png \
     DEF:T1=$RRDPATH/$RRDFILE:T1:AVERAGE \
     DEF:T2=$RRDPATH/$RRDFILE:T2:AVERAGE \
     DEF:T3=$RRDPATH/$RRDFILE:T3:AVERAGE \
-    LINE1:T1$BLACK:$T1NAME \
-    LINE1:T2$BLUE:$T2NAME \
+    LINE1:T1$DARKGREEN:$T1NAME \
+    LINE1:T2$BROWN:$T2NAME \
     LINE1:T3$RED:$T3NAME
 
 ###########################################
@@ -71,10 +75,12 @@ rrdtool graph $IMGPATH/week.png \
     DEF:T2=$RRDPATH/$RRDFILE:T2:AVERAGE \
     DEF:T3=$RRDPATH/$RRDFILE:T3:AVERAGE \
     CDEF:T1A=T1,7200,TREND \
-    LINE1:T1$LIME:$T2NAME \
-    LINE1:T2$BLUE:$T2NAME \
+    CDEF:T2A=T2,7200,TREND \
+    LINE1:T1$LIME:$T1NAME \
+    LINE1:T2$ORANGE:$T2NAME \
     LINE1:T3$RED:$T3NAME \
-    LINE1:T1A$BLACK:$T1AVGN
+    LINE1:T1A$DARKGREEN:$T1AVGN \
+    LINE1:T2A$BROWN:$T2AVGN
 
 ###########################################
 
@@ -86,12 +92,13 @@ rrdtool graph $IMGPATH/month.png \
     DEF:T1=$RRDPATH/$RRDFILE:T1:AVERAGE \
     DEF:T2=$RRDPATH/$RRDFILE:T2:AVERAGE \
     DEF:T3=$RRDPATH/$RRDFILE:T3:AVERAGE \
-    DEF:T4=$RRDPATH/$RRDFILE:T1:AVERAGE \
     CDEF:T1B=T1,$S1D,TREND \
+    CDEF:T2B=T2,$S1D,TREND \
     LINE1:T1$LIME:$T1NAME \
-    LINE1:T2$BLUE:$T2NAME \
+    LINE1:T2$ORANGE:$T2NAME \
     LINE1:T3$RED:$T3NAME \
-    LINE1:T1B$BLACK:$T1AVGN
+    LINE1:T1B$DARKGREEN:$T1AVGN \
+    LINE1:T2B$BROWN:$T2AVGN
 
 
 ##########################################
@@ -99,12 +106,16 @@ rrdtool graph $IMGPATH/month.png \
 rrdtool graph $IMGPATH/year.png \
     -w $WIDTH -h $HEIGHT -a PNG \
     --slope-mode \
-    --start -$S1M --end now \
+    --start -$S2M --end now \
     --vertical-label $YLABEL \
     DEF:T1=$RRDPATH/$RRDFILE:T1:AVERAGE \
     DEF:T2=$RRDPATH/$RRDFILE:T2:AVERAGE \
     DEF:T3=$RRDPATH/$RRDFILE:T3:AVERAGE \
-    LINE1:T1$BLACK:$T1NAME \
-    LINE1:T2$BLUE:$T2NAME \
-    LINE1:T3$RED:$T3NAME
+    CDEF:T1B=T1,$S2D,TREND \
+    CDEF:T2B=T2,$S2D,TREND \
+    LINE1:T1$LIME:$T1NAME \
+    LINE1:T2$ORANGE:$T2NAME \
+    LINE1:T3$RED:$T3NAME \
+    LINE1:T1B$DARKGREEN:$T1AVGN \
+    LINE1:T2B$BROWN:$T2AVGN
     #HRULE:0#00FFFF:"freezing"
